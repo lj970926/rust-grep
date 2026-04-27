@@ -44,12 +44,12 @@ fn run(config: GrepConfig) -> Result<(), Box<dyn Error>> {
 fn main() {
     let args: Vec<String> = env::args().collect();
     let config = GrepConfig::build(&args).unwrap_or_else(|err| {
-        println!("Failed to parse arguments: {err}");
+        eprintln!("Failed to parse arguments: {err}");
         process::exit(1);
     });
     // println!("Search: {}", config.query);
     // println!("File path: {}", config.file_path);
     if let Err(e) = run(config) {
-        println!("Run error: {e}");
+        eprintln!("Run error: {e}");
     }
 }

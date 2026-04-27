@@ -5,7 +5,6 @@ use std::process;
 
 use rust_grep::{search, search_case_insensitive};
 
-
 struct GrepConfig {
     query: String,
     file_path: String,
@@ -20,7 +19,11 @@ impl GrepConfig {
         let query = args[1].clone();
         let file_path = args[2].clone();
         let ignore_case = env::var("IGNORE_CASE").is_ok();
-        Ok(GrepConfig {query, file_path, ignore_case})
+        Ok(GrepConfig {
+            query,
+            file_path,
+            ignore_case,
+        })
     }
 }
 

@@ -12,12 +12,16 @@ struct GrepConfig {
 }
 
 impl GrepConfig {
-    fn build(args: &[String]) -> Result<GrepConfig, &'static str> {
-        if args.len() < 3 {
-            return Err("Not enough arguments");
-        }
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+    fn build(mut args: impl Iterator<Item = String>) -> Result<GrepConfig, &'static str> {
+        args.next();
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Fail to get query.")
+        };
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Fail to get file_path")
+        };
         let ignore_case = env::var("IGNORE_CASE").is_ok();
         Ok(GrepConfig {
             query,
@@ -42,8 +46,8 @@ fn run(config: GrepConfig) -> Result<(), Box<dyn Error>> {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let config = GrepConfig::build(&args).unwrap_or_else(|err| {
+    let args = env::args();
+    let config = GrepConfig::build(args).unwrap_or_else(|err| {
         eprintln!("Failed to parse arguments: {err}");
         process::exit(1);
     });
